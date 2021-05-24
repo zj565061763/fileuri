@@ -68,7 +68,7 @@ class FAlbumImageUri {
                     if (copySize > 0) return uri
                 }
             }
-        } catch (e: FileNotFoundException) {
+        } catch (e: Exception) {
             e.printStackTrace()
             runCatching {
                 resolver.delete(uri, null, null)

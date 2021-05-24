@@ -41,7 +41,6 @@ class FAlbumImageUri {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
-                put(MediaStore.MediaColumns.IS_PENDING, 1)
             }
         }
     }

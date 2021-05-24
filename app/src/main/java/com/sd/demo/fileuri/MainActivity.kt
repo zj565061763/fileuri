@@ -1,6 +1,7 @@
 package com.sd.demo.fileuri
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sd.demo.fileuri.databinding.ActivityMainBinding
@@ -64,7 +65,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun saveFile(file: File) {
         val imageUri = FAlbumImageUri.Builder().build(this@MainActivity)
-        imageUri.saveFile(file)
+        val uri = imageUri.saveFile(file)
+        Log.i(TAG, "uri:${uri}")
     }
 
     override fun onDestroy() {

@@ -1,7 +1,6 @@
 package com.sd.demo.fileuri
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sd.demo.fileuri.databinding.ActivityMainBinding
@@ -10,6 +9,8 @@ import com.sd.lib.dldmgr.DownloadManagerConfig
 import com.sd.lib.dldmgr.FDownloadManager
 import com.sd.lib.dldmgr.IDownloadManager
 import com.sd.lib.fileuri.FAlbumImageUri
+import com.yanzhenjie.permission.AndPermission
+import com.yanzhenjie.permission.runtime.Permission
 import java.io.File
 import java.util.*
 
@@ -20,8 +21,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var _binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // 初始化下载器
         DownloadManagerConfig.init(DownloadManagerConfig.Builder().build(this))
-
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(_binding.root)
@@ -48,21 +49,22 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         override fun onSuccess(info: DownloadInfo, file: File) {
-            val uuid = UUID.randomUUID().toString()
-            val imageUri = FAlbumImageUri.Builder().apply {
-                this.displayName = uuid + file.name
-            }.build(this@MainActivity)
-
-            imageUri.openOutputStream()?.use { outputStream ->
-                file.inputStream().use { inputStream ->
-                    val copyTo = inputStream.copyTo(outputStream)
-                    Log.i(TAG, "copyTo:${copyTo}")
-                }
-            }
+            AndPermission.with(this@MainActivity).runtime()
+                .permission(Permission.Group.STORAGE)
+                .onGranted {
+                    saveFile(file)
+                }.onDenied {
+                    finish()
+                }.start()
         }
 
         override fun onError(info: DownloadInfo) {
         }
+    }
+
+    private fun saveFile(file: File) {
+        val imageUri = FAlbumImageUri.Builder().build(this@MainActivity)
+        imageUri.saveFile(file)
     }
 
     override fun onDestroy() {

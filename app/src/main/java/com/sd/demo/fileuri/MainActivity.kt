@@ -22,8 +22,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var _binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // 初始化下载器
-        DownloadManagerConfig.init(DownloadManagerConfig.Builder().build(this))
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(_binding.root)

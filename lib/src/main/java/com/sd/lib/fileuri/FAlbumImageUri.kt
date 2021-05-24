@@ -57,7 +57,9 @@ class FAlbumImageUri {
             null
         } ?: return null
 
-        return saveBitmap(bitmap)
+        val uri = saveBitmap(bitmap)
+        bitmap.recycle()
+        return uri
     }
 
     /**

@@ -3,7 +3,6 @@ package com.sd.lib.fileuri
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -53,16 +52,29 @@ class FAlbumImageUri {
     fun saveFile(file: File): Uri? {
         if (file == null || !file.exists()) return null
 
-        val bitmap: Bitmap = try {
-            BitmapFactory.decodeFile(file.absolutePath)
+        val contentValues = createContentValues()
+        val resolver = context.contentResolver
+        val uri: Uri = try {
+            resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
         } catch (e: Exception) {
             e.printStackTrace()
             null
         } ?: return null
 
-        val uri = saveBitmap(bitmap)
-        bitmap.recycle()
-        return uri
+        try {
+            resolver.openOutputStream(uri)?.use { outputStream ->
+                file.inputStream().use { inputStream ->
+                    val copySize = inputStream.copyTo(outputStream)
+                    if (copySize > 0) return uri
+                }
+            }
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+            runCatching {
+                resolver.delete(uri, null, null)
+            }
+        }
+        return null
     }
 
     /**

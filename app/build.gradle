@@ -22,4 +22,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation project(path: ':lib')
+
+    implementation 'com.github.zj565061763:download-manager:1.0.5-beta01'
 }

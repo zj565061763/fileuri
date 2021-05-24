@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun saveFile(file: File) {
-        val uri = FAlbumImageUri.save(file, this)
+        val uri = FAlbumImageUri.saveFile(file, this)
         Log.i(TAG, "uri:${uri}")
     }
 

@@ -10,46 +10,17 @@ import android.webkit.MimeTypeMap
 import java.io.File
 import java.util.*
 
-class FAlbumImageUri {
-    private val context: Context
-
-    private val ext: String
-    private val mimeType: String
-    private val title: String
-    private val displayName: String
-    private val description: String
-
-    private constructor(builder: Builder, context: Context) {
-        this.context = context.applicationContext
-        this.ext = builder.ext
-        this.mimeType = builder.mimeType
-
-        val uuid = UUID.randomUUID().toString()
-        this.title = uuid
-        this.displayName = uuid
-        this.description = uuid
-    }
-
-    private fun createContentValues(): ContentValues {
-        return ContentValues().apply {
-            this.put(MediaStore.Images.ImageColumns.TITLE, title)
-            this.put(MediaStore.Images.ImageColumns.DISPLAY_NAME, displayName)
-            this.put(MediaStore.Images.ImageColumns.MIME_TYPE, mimeType)
-            this.put(MediaStore.Images.ImageColumns.DESCRIPTION, description)
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
-            }
-        }
-    }
-
+object FAlbumImageUri {
     /**
      * 保存图片
      */
-    fun saveFile(file: File): Uri? {
-        if (file == null || !file.exists()) return null
+    @JvmStatic
+    fun saveFile(file: File, context: Context): Uri? {
+        if (!file.exists()) return null
 
-        val contentValues = createContentValues()
+        val ext = LibUtils.getExt(file.absolutePath)
+        val contentValues = createContentValues(ext)
+
         val resolver = context.contentResolver
         val uri: Uri = try {
             resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
@@ -58,42 +29,23 @@ class FAlbumImageUri {
             null
         } ?: return null
 
-        try {
-            resolver.openOutputStream(uri)?.use { outputStream ->
-                file.inputStream().use { inputStream ->
-                    val copySize = inputStream.copyTo(outputStream)
-                    if (copySize > 0) return uri
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            runCatching {
-                resolver.delete(uri, null, null)
-            }
-        }
-        return null
+        return LibUtils.saveToUri(uri, file.inputStream(), resolver)
     }
 
-    class Builder {
-        var ext: String = ""
-        var mimeType: String = ""
+    private fun createContentValues(ext: String): ContentValues {
+        val uuid = UUID.randomUUID().toString()
+        val finalExt = if (ext.isNotEmpty()) ext else "jpg"
+        val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(finalExt) ?: "image/jpeg"
 
-        fun build(context: Context): FAlbumImageUri {
-            if (ext.isEmpty()) ext = "jpg"
+        return ContentValues().apply {
+            this.put(MediaStore.Images.ImageColumns.TITLE, uuid)
+            this.put(MediaStore.Images.ImageColumns.DISPLAY_NAME, uuid)
+            this.put(MediaStore.Images.ImageColumns.DESCRIPTION, uuid)
+            this.put(MediaStore.Images.ImageColumns.MIME_TYPE, mimeType)
 
-            if (mimeType.isEmpty()) {
-                val extension = MimeTypeMap.getFileExtensionFromUrl(ext)
-                mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension) ?: "image/jpeg"
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
             }
-            return FAlbumImageUri(this, context)
-        }
-    }
-
-    companion object {
-        @JvmStatic
-        fun save(file: File, context: Context): Uri? {
-            val imageUri = Builder().build(context)
-            return imageUri.saveFile(file)
         }
     }
 }

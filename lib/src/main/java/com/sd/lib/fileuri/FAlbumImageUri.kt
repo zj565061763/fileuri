@@ -19,6 +19,7 @@ class FAlbumImageUri {
     private val ext: String
     private val mimeType: String
     private val title: String
+    private val displayName: String
     private val description: String
 
     private constructor(builder: Builder, context: Context) {
@@ -27,13 +28,15 @@ class FAlbumImageUri {
         this.mimeType = builder.mimeType
 
         val uuid = UUID.randomUUID().toString()
-        this.title = "${uuid}.${builder.ext}"
+        this.title = uuid
+        this.displayName = uuid
         this.description = uuid
     }
 
     private fun createContentValues(): ContentValues {
         return ContentValues().apply {
             this.put(MediaStore.Images.ImageColumns.TITLE, title)
+            this.put(MediaStore.Images.ImageColumns.DISPLAY_NAME, displayName)
             this.put(MediaStore.Images.ImageColumns.MIME_TYPE, mimeType)
             this.put(MediaStore.Images.ImageColumns.DESCRIPTION, description)
 

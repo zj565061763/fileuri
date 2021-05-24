@@ -6,7 +6,7 @@ plugins {
 android {
     compileSdkVersion 30
     defaultConfig {
-        applicationId "com.example.fileuri"
+        applicationId "com.sd.demo.fileuri"
         minSdkVersion 15
         targetSdkVersion 30
         versionCode 1

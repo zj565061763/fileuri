@@ -1,4 +1,4 @@
-package com.example.fileuri
+package com.sd.demo.fileuri
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

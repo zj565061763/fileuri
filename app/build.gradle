@@ -13,6 +13,10 @@ android {
         versionName "1.0"
     }
 
+    viewBinding {
+        enabled = true
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -27,5 +31,6 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation project(path: ':lib')
 
+    implementation 'com.yanzhenjie:permission:2.0.3'
     implementation 'com.github.zj565061763:download-manager:1.0.5-beta01'
 }

@@ -12,7 +12,7 @@ import java.util.*
 
 object FAlbumImageUri {
     /**
-     * 保存图片
+     * 保存图片文件
      */
     @JvmStatic
     fun saveFile(file: File, context: Context): Uri? {

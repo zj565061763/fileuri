@@ -22,7 +22,7 @@ public class FFileUri
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
         {
             return FileProvider.getUriForFile(context,
-                    context.getPackageName() + "." + MyFileProvider.class.getSimpleName().toLowerCase(),
+                    context.getPackageName() + "." + FFileProvider.class.getSimpleName().toLowerCase(),
                     file);
         } else
         {

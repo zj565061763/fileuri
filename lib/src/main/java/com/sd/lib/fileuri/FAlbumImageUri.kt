@@ -88,4 +88,12 @@ class FAlbumImageUri {
             return FAlbumImageUri(this, context)
         }
     }
+
+    companion object {
+        @JvmStatic
+        fun save(file: File, context: Context): Uri? {
+            val imageUri = Builder().build(context)
+            return imageUri.saveFile(file)
+        }
+    }
 }

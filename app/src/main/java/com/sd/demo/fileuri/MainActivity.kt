@@ -6,7 +6,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sd.demo.fileuri.databinding.ActivityMainBinding
 import com.sd.lib.dldmgr.DownloadInfo
-import com.sd.lib.dldmgr.DownloadManagerConfig
 import com.sd.lib.dldmgr.FDownloadManager
 import com.sd.lib.dldmgr.IDownloadManager
 import com.sd.lib.fileuri.FAlbumImageUri
@@ -62,8 +61,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun saveFile(file: File) {
-        val imageUri = FAlbumImageUri.Builder().build(this@MainActivity)
-        val uri = imageUri.saveFile(file)
+        val uri = FAlbumImageUri.save(file, this)
         Log.i(TAG, "uri:${uri}")
     }
 

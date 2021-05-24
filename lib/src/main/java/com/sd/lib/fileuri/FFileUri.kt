@@ -8,7 +8,7 @@ import java.io.File
 
 object FFileUri {
     @JvmStatic
-    fun get(file: File, context: Context): Uri {
+    fun getUri(file: File, context: Context): Uri {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             FileProvider.getUriForFile(
                 context,
@@ -18,5 +18,11 @@ object FFileUri {
         } else {
             Uri.fromFile(file)
         }
+    }
+
+    @Deprecated("")
+    @JvmStatic
+    fun get(context: Context, file: File): Uri {
+        return getUri(file, context)
     }
 }

@@ -2,14 +2,12 @@ package com.sd.lib.fileuri
 
 import android.content.ContentValues
 import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 import java.io.File
-import java.io.FileNotFoundException
 import java.util.*
 
 class FAlbumImageUri {
@@ -74,41 +72,6 @@ class FAlbumImageUri {
             }
         }
         return null
-    }
-
-    /**
-     * 保存图片
-     */
-    fun saveBitmap(bitmap: Bitmap): Uri? {
-        val contentValues = createContentValues()
-        val resolver = context.contentResolver
-        val uri: Uri = try {
-            resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        } ?: return null
-
-        val outputStream = try {
-            resolver.openOutputStream(uri)
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-            runCatching {
-                resolver.delete(uri, null, null)
-            }
-            null
-        } ?: return null
-
-        val success: Boolean = outputStream.use {
-            try {
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-                true
-            } catch (e: Exception) {
-                e.printStackTrace()
-                false
-            }
-        }
-        return if (success) uri else null
     }
 
     class Builder {
